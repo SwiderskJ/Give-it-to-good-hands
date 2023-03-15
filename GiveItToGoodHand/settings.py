@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'GiveItToGoodHand.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Rent_a_boardroom',
+        'NAME': 'GiveIt',
         'HOST': 'localhost',
         'PASSWORD': os.environ['DB_PASSWORD'],
         'USER': 'postgres',
