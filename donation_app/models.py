@@ -15,3 +15,4 @@ class Institution(models.Model):
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=256)
     type = models.CharField(choices=FUNDATION_TYPE, default='fundacja')
+    categories = models.ManyToManyField(Category)
