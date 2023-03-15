@@ -11,12 +11,24 @@ FUNDATION_TYPE = (
 class Category(models.Model):
     name = models.CharField(max_length=64)
 
+    class Meta:
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return self.name
+
 
 class Institution(models.Model):
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=256)
     type = models.IntegerField(choices=FUNDATION_TYPE, default=1)
     categories = models.ManyToManyField(Category)
+
+    class Meta:
+        verbose_name_plural = "Institutions"
+
+    def __str__(self):
+        return self.name
 
 
 class Donation(models.Model):
@@ -31,3 +43,8 @@ class Donation(models.Model):
     pick_up_time = models.TimeField()
     pick_up_comment = models.CharField(max_length=256)
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, default = None)
+
+    class Meta:
+        verbose_name_plural = "Donations"
+
+
