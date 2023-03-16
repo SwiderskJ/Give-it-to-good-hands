@@ -1,7 +1,7 @@
 def user(request):
-    if not request.user:
-        return {}
+    if request.user.is_authenticated:
+        return {
+            'user': request.user,
+        }
 
-    return {
-        'user': request.user,
-    }
+    return {'user': None}
