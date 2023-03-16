@@ -12,7 +12,7 @@ from user_app.forms import NewUserForm
 class LoginView(View):
 
     def get(self, request):
-        if request.user:
+        if request.user.is_authenticated:
             return redirect(reverse('main_site'))
         return render(request, 'login.html')
 
@@ -36,7 +36,7 @@ class LoginView(View):
 class RegisterView(View):
 
     def get(self, request):
-        if request.user:
+        if request.user.is_authenticated:
             return redirect(reverse('main_site'))
         form = NewUserForm()
         return render(request, 'register.html', context={'form': form})
