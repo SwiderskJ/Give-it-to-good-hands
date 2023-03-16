@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 
 from user_app.forms import NewUserForm
 
@@ -12,6 +12,8 @@ from user_app.forms import NewUserForm
 class LoginView(View):
 
     def get(self, request):
+        if request.user:
+            return redirect(reverse('main_site'))
         return render(request, 'login.html')
 
     def post(self, request):
@@ -34,6 +36,8 @@ class LoginView(View):
 class RegisterView(View):
 
     def get(self, request):
+        if request.user:
+            return redirect(reverse('main_site'))
         form = NewUserForm()
         return render(request, 'register.html', context={'form': form})
 
@@ -47,3 +51,10 @@ class RegisterView(View):
             )
         messages.success(request, "Registration successful.")
         return redirect(reverse('login'))
+
+
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+
+        return redirect(reverse('main_site'))
