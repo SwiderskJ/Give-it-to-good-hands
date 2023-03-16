@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.views import View
-from donation_app.models import Donation, Institution
+from donation_app.models import Donation, Institution, Category
 from django.core.paginator import Paginator
-import random
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 
 
 class LandingPageView(View):
@@ -37,8 +38,15 @@ class LandingPageView(View):
         })
 
 
-class AddDonationView(View):
+class AddDonationView(LoginRequiredMixin, View):
+    login_url = reverse_lazy('login')
 
     def get(self, request):
-        return render(request, 'form.html')
+        categories = Category.objects.all()
+        institutions = Institution.objects.all()
+
+        return render(request, 'form.html', context={
+            'categories': categories,
+            'institutions': institutions,
+        })
 

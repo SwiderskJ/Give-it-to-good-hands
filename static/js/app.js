@@ -220,8 +220,11 @@ document.addEventListener("DOMContentLoaded", function() {
      */
     updateForm() {
       this.$step.innerText = this.currentStep;
-
+      console.log(this.currentStep)
+      console.log('abv')
       // TODO: Validation
+      const a = document.querySelectorAll('input[type="checkbox"]')
+      console.log(a)
 
       this.slides.forEach(slide => {
         slide.classList.remove("active");
@@ -229,6 +232,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (slide.dataset.step == this.currentStep) {
           slide.classList.add("active");
         }
+
       });
 
       this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 6;
