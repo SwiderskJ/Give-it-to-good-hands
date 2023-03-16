@@ -4,10 +4,7 @@
   <body>
     <header class="header--main-page">
       <nav class="container container--70">
-        <ul class="nav--actions">
-          <li><a href="{% url 'login' %}" class="btn btn--small btn--without-border">Zaloguj</a></li>
-          <li><a href="{% url 'register' %}" class="btn btn--small btn--highlighted">Załóż konto</a></li>
-        </ul>
+        {% include 'login-view.html' %}
 
         <ul>
           <li><a href="{% url 'main_site' %}" class="btn btn--without-border active">Start</a></li>
