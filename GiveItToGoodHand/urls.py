@@ -16,11 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from donation_app.views import LandingPageView, AddDonationView
-from user_app.views import LoginView, RegisterView
+from user_app.views import LoginView, RegisterView, LogoutView
+
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     path('', LandingPageView.as_view(), name='main_site'),
     path('donation/', AddDonationView.as_view(), name='donation'),
     path('login/', LoginView.as_view(), name='login'),
     path('register/', RegisterView.as_view(), name='register'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
