@@ -1,4 +1,3 @@
-# Give-it-to-good-hands
 <h1>Give It! To good hands</h1> 
 <h3>Project Description</h3>
 <p>Web application allows users to give redutant items to verified orgaznizations.</p>
