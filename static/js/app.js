@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", function() {
   /**
    * HomePage - Help section
    */
+
+
   class Help {
     constructor($el) {
       this.$el = $el;
@@ -56,9 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     }
 
-    /**
-     * TODO: callback to page change event
-     */
+
     changePage(e) {
       e.preventDefault();
       const page = e.target.dataset.page;
@@ -74,6 +74,8 @@ document.addEventListener("DOMContentLoaded", function() {
   /**
    * Form Select
    */
+
+
   class FormSelect {
     constructor($el) {
       this.$el = $el;
@@ -172,6 +174,8 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$prev = form.querySelectorAll(".prev-step");
       this.$step = form.querySelector(".form--steps-counter span");
       this.currentStep = 1;
+      this.dict = {};
+      this.categories = [];
 
       this.$stepInstructions = form.querySelectorAll(".form--steps-instructions p");
       const $stepForms = form.querySelectorAll("form > div");
@@ -220,11 +224,29 @@ document.addEventListener("DOMContentLoaded", function() {
      */
     updateForm() {
       this.$step.innerText = this.currentStep;
-      console.log(this.currentStep)
-      console.log('abv')
-      // TODO: Validation
-      const a = document.querySelectorAll('input[type="checkbox"]')
-      console.log(a)
+
+      if (this.currentStep === 2) {
+                if (getValuesFromForm() === false) {
+                    this.currentStep = 1
+                    alert("Wybierz kategorię.")
+                    return;
+                }
+            }
+
+      if (this.currentStep === 3) {
+                if (bagsDonation() === "") {
+                    this.currentStep = 2
+                    alert("Podaj liczbę worków.")
+                    return;
+                }
+            }
+      if (this.currentStep === 4) {
+                if (getValuesRadio() === false) {
+                    this.currentStep = 3
+                    alert("Wybierz instytucję.")
+                    return;
+                }
+            }
 
       this.slides.forEach(slide => {
         slide.classList.remove("active");
@@ -232,24 +254,109 @@ document.addEventListener("DOMContentLoaded", function() {
         if (slide.dataset.step == this.currentStep) {
           slide.classList.add("active");
         }
-
       });
 
       this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 6;
       this.$step.parentElement.hidden = this.currentStep >= 6;
 
       // TODO: get data from inputs and show them in summary
+
+
+
+      if (this.currentStep == 3) {
+        const markedCheckbox = document.querySelectorAll('input[type="checkbox"]:checked');
+
+        for (const checkbox of markedCheckbox) {
+          if (checkbox.checked)
+            this.categories.push(checkbox.value);
+        }
+
+        const radio = document.querySelectorAll('input[type="radio"]');
+
+        for (const element of radio) {
+          const el_value = element.value.trim();
+
+          if (this.categories.includes(el_value)) {
+          element.parentElement.parentElement.style.display = 'block';
+
+        }
+        this.dict['categories']= element.value;
+        }
+
+      }
+      if (this.currentStep == 5) {
+
+        const marked_organization = document.querySelectorAll('input[type="radio"]:checked');
+
+        for (const checked_organization of marked_organization) {
+          if (checked_organization.checked)
+            this.dict['organization'] = checked_organization.id;
+
+        }
+        const bags = document.querySelector('input[name="bags"]')
+        this.dict['bags'] = bags.value
+        const street = document.querySelector('input[name="address"]')
+        this.dict['address'] = street.value
+        const city = document.querySelector('input[name="city"]')
+        this.dict['city'] = city.value
+        const postcode = document.querySelector('input[name="postcode"]')
+        this.dict['postcode'] = postcode.value
+        const phone = document.querySelector('input[name="phone"]')
+        this.dict['phone'] = phone.value
+        const date = document.querySelector('input[name="date"]')
+        this.dict['date'] = date.value
+        const time = document.querySelector('input[name="time"]')
+        this.dict['time'] = time.value
+        this.dict['more_info'] = document.getElementById("more_info").value
+
+        function change(old_value, new_value) {
+          document.body.innerHTML = document.body.innerHTML.replace(old_value, new_value);
+        }
+        change(document.getElementById('summary_bags').innerText,'Ilość worków: ' + this.dict['bags']);
+        change(document.getElementById('summary_institution').innerText, this.dict['organization']);
+        change(document.getElementById('summary_street').innerText, this.dict['address']);
+        change(document.getElementById('summary_city').innerText, this.dict['city']);
+        change(document.getElementById('summary_postcode').innerText, this.dict['postcode']);
+        console.log(document.getElementById('summary_city').innerText);
+        change(document.getElementById('summary_phone').innerText, this.dict['phone']);
+        change(document.getElementById('date').innerText, this.dict['date']);
+        change(document.getElementById('hour').innerText, this.dict['time']);
+        change(document.getElementById('alerts').innerText, this.dict['more_info']);
+        console.log(document.getElementById('alerts').innerText);
+
+        console.log(this.dict);
+        const form = document.getElementById("form_data");
+        console.log(form);
+        let formBody = [];
+        for (let property in this.dict) {
+          let encodedKey = encodeURIComponent(property);
+          let encodedValue = encodeURIComponent(this.dict[property]);
+          formBody.push(encodedKey + "=" + encodedValue);
+          }
+          formBody = formBody.join("&");
+          const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+          fetch('/donation/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+              'X-CSRFToken': csrftoken,
+
+            },
+            body: formBody
+          })
+      }
+
     }
 
-    /**
-     * Submit form
-     *
-     * TODO: validation, send data to server
-     */
+
     submit(e) {
-      e.preventDefault();
+      // e.preventDefault();
+
       this.currentStep++;
       this.updateForm();
+
+      submitForm();
+
     }
   }
   const form = document.querySelector(".form--steps");
@@ -257,3 +364,37 @@ document.addEventListener("DOMContentLoaded", function() {
     new FormSteps(form);
   }
 });
+
+function getValuesFromForm() {
+    const categoryArray = []
+    const checkboxes = document.querySelectorAll('.form-group--checkbox > label > input[type="checkbox"]')
+    checkboxes.forEach(function (el) {
+        if (el.checked) {
+            categoryArray.push(el.value)
+        }
+    })
+    if (categoryArray.length < 1) {
+        return false
+    }
+    return categoryArray
+}
+
+function bagsDonation() {
+    const countBags = document.querySelector('input[name="bags"]').value
+    return countBags
+}
+
+function getValuesRadio() {
+  const institutionArray = [];
+  const radio = document.querySelectorAll('.form-group--checkbox > label > input[type="radio"]');
+  radio.forEach(function (el) {
+    if (el.checked) {
+        institutionArray.push(el.value)
+
+      }
+    if (institutionArray.length < 1) {
+      return false
+    }
+    return institutionArray
+  })}
+

@@ -4,6 +4,9 @@ from donation_app.models import Donation, Institution, Category
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 class LandingPageView(View):
@@ -50,3 +53,29 @@ class AddDonationView(LoginRequiredMixin, View):
             'institutions': institutions,
         })
 
+    def post(self, request):
+
+        donation = Donation.objects.create(
+            quantity=request.POST.get('bags'),
+            address=request.POST.get('address'),
+            institution=Institution.objects.get(name=request.POST.get('organization')),
+            phone_number=request.POST.get('phone'),
+            city=request.POST.get('city'),
+            zip_code=request.POST.get('postcode'),
+            pick_up_date=request.POST.get('date'),
+            pick_up_time=request.POST.get('time'),
+            pick_up_comment=request.POST.get('more_info'),
+            user=User.objects.get(username=request.user)
+        )
+        categories = request.POST.getlist('categories')
+        for category in categories:
+            donation.categories.add(Category.objects.get(id=int(category)))
+
+        return redirect(reverse('confirm'))
+
+
+class FormConfirmView(LoginRequiredMixin, View):
+    login_url = reverse_lazy('login')
+
+    def get(self, request):
+        return render(request, 'form-confirmation.html')
