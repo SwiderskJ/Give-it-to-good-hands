@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block main %}
-<body>
+<section>
     <header class="header--main-page">
       <nav class="container container--70">
         {% include 'login-view.html' %}
@@ -15,18 +15,25 @@
         </ul>
       </nav>
     </header>
-    <div class="profile-view">
-        <h2>Twój Profil</h2>
-        <div class="profile">
-            <p>Your name: {{ user.username }}</p>
-            <p>Your surname: {{ surname }}</p>
-            <p>Your email: {{ email }}</p>
-            <ul>Lista twoich donacji</ul>
-            {% for donation in donations %}
-                <li>Ilość: {{ donation.quantity }} Data: {{ donation.pick_up_date }} Wsparta organizacja:
-                    {{ donation.institution.name }}</li>
-            {% endfor %}
+    <section id="profile">
+        <div class="profile-view">
+            <h2>Twój Profil</h2>
+            <div class="profile">
+                <p>Your name: {{ user.username }}</p>
+                <p>Your surname: {{ surname }}</p>
+                <p>Your email: {{ email }}</p>
+                <ul>Lista twoich donacji</ul>
+                {% for donation in donations %}
+                    <li>Ilość: {{ donation.quantity }} Data: {{ donation.pick_up_date }} Wsparta organizacja:
+                        {{ donation.institution.name }} <a href="{% url 'archive' donation.id %}">Zarchiwizuj</a></li>
+                {% endfor %}
+                <ul>Twoje zarchiwizowane donacje</ul>
+                {% for archive in archives %}
+                    <li>Ilość: {{ archive.quantity }} Data: {{ archive.pick_up_date }} Wsparta organizacja:
+                        {{ archive.institution.name }}</li>
+                {% endfor %}
+            </div>
         </div>
-    </div>
+    </section>
 </body>
 {% endblock %}

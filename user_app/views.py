@@ -68,9 +68,21 @@ class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
         last_name = request.user.last_name
         email = User.objects.get(username=request.user).email
-        donations = Donation.objects.filter(user=request.user.id)
+        donations = Donation.objects.filter(user=request.user.id, is_taken=False)
+        archives = Donation.objects.filter(user=request.user.id, is_taken=True)
         return render(request, 'profile.html', context={
             'surname': last_name,
             'email': email,
-            'donations': donations
+            'donations': donations,
+            'archives': archives,
         })
+
+
+class ArchiveDonationView(LoginRequiredMixin, View):
+    login_url = reverse_lazy('login')
+
+    def get(self, request, donation_id):
+        donation = Donation.objects.get(id=donation_id)
+        donation.is_taken = True
+        donation.save()
+        return redirect(reverse('profile'))
