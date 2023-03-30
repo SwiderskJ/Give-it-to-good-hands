@@ -67,7 +67,6 @@ class ProfileView(LoginRequiredMixin, View):
 
     def get(self, request):
         last_name = request.user.last_name
-        print(last_name)
         email = User.objects.get(username=request.user).email
         donations = Donation.objects.filter(user=request.user.id)
         return render(request, 'profile.html', context={

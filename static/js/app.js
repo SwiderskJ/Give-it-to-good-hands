@@ -317,16 +317,15 @@ document.addEventListener("DOMContentLoaded", function() {
         change(document.getElementById('summary_street').innerText, this.dict['address']);
         change(document.getElementById('summary_city').innerText, this.dict['city']);
         change(document.getElementById('summary_postcode').innerText, this.dict['postcode']);
-        console.log(document.getElementById('summary_city').innerText);
         change(document.getElementById('summary_phone').innerText, this.dict['phone']);
         change(document.getElementById('date').innerText, this.dict['date']);
         change(document.getElementById('hour').innerText, this.dict['time']);
         change(document.getElementById('alerts').innerText, this.dict['more_info']);
-        console.log(document.getElementById('alerts').innerText);
 
-        console.log(this.dict);
+
+
         const form = document.getElementById("form_data");
-        console.log(form);
+
         let formBody = [];
         for (let property in this.dict) {
           let encodedKey = encodeURIComponent(property);
